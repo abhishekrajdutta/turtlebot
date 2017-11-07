@@ -15,6 +15,7 @@ def detect():
 		
 		try:
 			mode=float(raw_input('Input:'))
+			mode=mode*3.14/180;
 			pub.publish(mode)
 		except ValueError:
 			break
