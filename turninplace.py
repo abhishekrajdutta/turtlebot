@@ -17,6 +17,8 @@ class GoForward():
 		self.cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
 		self.state=0;
 		self.omega=0;
+		self.zcurr=0;
+		self.zinit=0;
 		reset=0;
 		r = rospy.Rate(10);
 		self.move_cmd = Twist()
@@ -37,9 +39,10 @@ class GoForward():
 	def OdomCallback(self,data):
 		K=1;
 		wmax=1;
-		zdes=cmath.rect(1,self.state)
-		zcurr=(data.pose.pose.orientation.w + data.pose.pose.orientation.z*1j )**2
-		zerr=zdes/zcurr
+		zdes= cmath.rect(1,self.state)
+		self.zcurr=(data.pose.pose.orientation.w + data.pose.pose.orientation.z*1j )**2
+		rospy.loginfo(zdes)
+		zerr=zdes/self.zcurr
 		theta=cmath.phase(zerr)
 		rospy.loginfo(theta)
 		w=K*theta
@@ -47,9 +50,9 @@ class GoForward():
 			w=wmax
 		self.omega=w
 
+
 	def GoalCallback(self,data):
-		self.state=data.data
-	    
+		self.state=data.data+cmath.phase(self.zcurr)
 
 	def shutdown(self):
 		rospy.loginfo("Stop TurtleBot")
