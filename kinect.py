@@ -21,25 +21,25 @@ class read_kinect():
 		self.seg_image=0;
 
 		while not rospy.is_shutdown():
-			cv2.imshow('image',self.cv_image)
-			cv2.imshow('image2',self.dp_image)
-			cv2.imshow('image3',self.norm_image)
-			cv2.imshow('image4',self.seg_image)
+			cv2.imshow('color image',self.cv_image)
+			cv2.imshow('depth image',self.norm_image)
+			cv2.imshow('segmented image',self.seg_image)
 			cv2.waitKey(10);
 		
 		rospy.spin();
 
 	def colorCallback(self,data):
 		self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		boundaries = [([25, 25, 25], [35, 35, 35])]
+		boundaries = [([10,  20, 120], [30, 40, 140 ])]
 
 		for (lower, upper) in boundaries:
 			lower = np.array(lower, dtype = "uint8")
 			upper = np.array(upper, dtype = "uint8")
 	 
 		
-		mask = cv2.inRange(self.cv_image, lower, upper)
-		self.seg_image=cv2.bitwise_and(self.cv_image, self.cv_image, mask = mask)
+		self.seg_image = cv2.inRange(self.cv_image, lower, upper,self.seg_image)
+		# self.seg_image=cv2.bitwise_and(self.cv_image, self.cv_image, mask = mask)
+		
 	
 		
 
