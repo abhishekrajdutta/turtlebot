@@ -23,6 +23,7 @@ class read_kinect():
 		while not rospy.is_shutdown():
 			cv2.imshow('color image',self.cv_image)
 			cv2.imshow('depth image',self.norm_image)
+			cv2.imshow('depth image2',self.dp_image)
 			cv2.imshow('segmented image',self.seg_image)
 			cv2.waitKey(10);
 		
